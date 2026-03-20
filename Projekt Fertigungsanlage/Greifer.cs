@@ -9,19 +9,20 @@
             get { return greifweite; }
         }
 
-        public Greifer(string art = "Greifer", int verschleiss = 0, int greifweite = 0)
+        public Greifer(string art, int verschleiss, int greifweite)
             : base(art, verschleiss)
         {
             this.greifweite = greifweite;
         }
 
-        public override string ausgeben()
+        public override string Ausgeben()
         {
-            return $"Greifer mit Greifweite {greifweite} (Verschleiss {verschleiss} %).";
+            return $"Greifer mit Greifweite {greifweite} (Verschleiss {Verschleiss} %).";
         }
 
-        public override void arbeiten()
+        public override void Arbeiten()
         {
+            // Greifer erhoeht den Verschleiss um 1
             ErhoeheVerschleiss(1);
         }
     }

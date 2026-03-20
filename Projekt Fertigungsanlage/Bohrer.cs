@@ -15,13 +15,14 @@
             this.groesse = groesse;
         }
 
-        public override string ausgeben()
+        public override string Ausgeben()
         {
-            return $"Bohrer mit Groesse {groesse} (Verschleiss {verschleiss} %).";
+            return $"Bohrer mit Groesse {groesse} (Verschleiss {Verschleiss} %).";
         }
 
-        public override void arbeiten()
+        public override void Arbeiten()
         {
+            // Bohrer erhoeht den Verschleiss um 5
             ErhoeheVerschleiss(5);
         }
     }

@@ -1,16 +1,19 @@
-﻿namespace Fertigungsanlage
+﻿using System;
+using System.Collections.Generic;
+
+namespace Fertigungsanlage
 {
     internal class Program
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("=== TEST 1: Industrieroboter / Werkzeugkasten ===");
+            Console.WriteLine();
+
             Industrieroboter roboter = new Industrieroboter();
 
             Bohrer bohrer1 = new Bohrer("Bohrer", 0, 10);
-            Bohrer bohrer2 = new Bohrer("Bohrer", 0, 10);
-
-            Console.WriteLine("=== Testprogramm gemaess Aufgabenstellung ===");
-            Console.WriteLine();
+            Bohrer bohrer2 = new Bohrer("Bohrer", 0, 12);
 
             TesteHinzufuegen(roboter, 5, bohrer1);
             TesteHinzufuegen(roboter, 5, bohrer2);
@@ -25,41 +28,83 @@
             TesteEntfernen(roboter, -1);
 
             Console.WriteLine();
-            Console.WriteLine("=== Zusatztests ===");
+            Console.WriteLine("=== TEST 2: Weitere Werkzeugtypen ===");
             Console.WriteLine();
 
             Greifer greifer = new Greifer("Greifer", 0, 25);
             Schweisser schweisser = new Schweisser("Schweisser", 0);
 
-            roboter.werkzeugHinzufuegen(2, greifer);
-            roboter.werkzeugHinzufuegen(7, schweisser);
+            roboter.WerkzeugHinzufuegen(2, greifer);
+            roboter.WerkzeugHinzufuegen(7, schweisser);
 
-            Console.WriteLine("Werkzeug auf Platz 2: " + roboter.getWerkzeug(2)?.ausgeben());
-            Console.WriteLine("Werkzeug auf Platz 7: " + roboter.getWerkzeug(7)?.ausgeben());
-            Console.WriteLine("Werkzeug auf Platz 4: " + (roboter.getWerkzeug(4) == null ? "null" : roboter.getWerkzeug(4).ausgeben()));
+            Console.WriteLine("Werkzeug auf Platz 2: " + roboter.GetWerkzeug(2)?.Ausgeben());
+            Console.WriteLine("Werkzeug auf Platz 7: " + roboter.GetWerkzeug(7)?.Ausgeben());
+            Console.WriteLine("Werkzeug auf Platz 4: " + (roboter.GetWerkzeug(4) == null ? "null" : roboter.GetWerkzeug(4).Ausgeben()));
 
             Console.WriteLine();
-            Console.WriteLine("Greifer steht auf Index: " + roboter.findeWerkzeug(greifer));
-            Console.WriteLine("Schweisser steht auf Index: " + roboter.findeWerkzeug(schweisser));
-            Console.WriteLine("Bohrer 1 steht auf Index: " + roboter.findeWerkzeug(bohrer1));
-            Console.WriteLine("Bohrer 2 steht auf Index: " + roboter.findeWerkzeug(bohrer2));
+            Console.WriteLine("Greifer steht auf Index: " + roboter.FindeWerkzeug(greifer));
+            Console.WriteLine("Schweisser steht auf Index: " + roboter.FindeWerkzeug(schweisser));
+            Console.WriteLine("Bohrer 1 steht auf Index: " + roboter.FindeWerkzeug(bohrer1));
+            Console.WriteLine("Bohrer 2 steht auf Index: " + roboter.FindeWerkzeug(bohrer2));
 
             Console.WriteLine();
             Console.WriteLine("Vor dem Arbeiten:");
-            Console.WriteLine(greifer.ausgeben());
-            Console.WriteLine(schweisser.ausgeben());
+            Console.WriteLine(greifer.Ausgeben());
+            Console.WriteLine(schweisser.Ausgeben());
 
-            greifer.arbeiten();
-            schweisser.arbeiten();
+            greifer.Arbeiten();
+            schweisser.Arbeiten();
 
             Console.WriteLine("Nach dem Arbeiten:");
-            Console.WriteLine(greifer.ausgeben());
-            Console.WriteLine(schweisser.ausgeben());
+            Console.WriteLine(greifer.Ausgeben());
+            Console.WriteLine(schweisser.Ausgeben());
 
             Console.WriteLine();
             Console.WriteLine("Freie Plaetze:");
-            List<int> frei = roboter.freiePlaetze();
-            Console.WriteLine(string.Join(", ", frei));
+            List<int> freiePlaetze = roboter.FreiePlaetze();
+            Console.WriteLine(string.Join(", ", freiePlaetze));
+
+            Console.WriteLine();
+            Console.WriteLine("=== TEST 3: VerschleissException beim Erhoehen ===");
+            Console.WriteLine();
+
+            Bohrer bohrerFastKaputt = new Bohrer("Bohrer", 95, 8);
+
+            Console.WriteLine("Startzustand:");
+            Console.WriteLine(bohrerFastKaputt.Ausgeben());
+            Console.WriteLine();
+
+            try
+            {
+                Console.WriteLine("Bohrer arbeitet jetzt...");
+                bohrerFastKaputt.Arbeiten();   // 95 + 5 = 100 -> Exception
+                Console.WriteLine("Nach dem Arbeiten:");
+                Console.WriteLine(bohrerFastKaputt.Ausgeben());
+            }
+            catch (VerschleissException ex)
+            {
+                Console.WriteLine("Exception abgefangen:");
+                Console.WriteLine(ex.Message);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Zustand nach Exception:");
+            Console.WriteLine(bohrerFastKaputt.Ausgeben());
+
+            Console.WriteLine();
+            Console.WriteLine("=== TEST 4: VerschleissException beim Setzen im Konstruktor ===");
+            Console.WriteLine();
+
+            try
+            {
+                Schweisser defekt = new Schweisser("Schweisser", 100);
+                Console.WriteLine(defekt.Ausgeben());
+            }
+            catch (VerschleissException ex)
+            {
+                Console.WriteLine("Exception abgefangen:");
+                Console.WriteLine(ex.Message);
+            }
 
             Console.WriteLine();
             Console.WriteLine("Programm beendet.");
@@ -68,11 +113,11 @@
 
         private static void TesteHinzufuegen(Industrieroboter roboter, int index, Werkzeug werkzeug)
         {
-            bool erfolgreich = roboter.werkzeugHinzufuegen(index, werkzeug);
+            bool erfolgreich = roboter.WerkzeugHinzufuegen(index, werkzeug);
 
             if (erfolgreich)
             {
-                Console.WriteLine($"Hinzugefuegtes Werkzeug auf Platz {index}: {roboter.getWerkzeug(index).ausgeben()}");
+                Console.WriteLine($"Hinzugefuegtes Werkzeug auf Platz {index}: {roboter.GetWerkzeug(index).Ausgeben()}");
             }
             else
             {
@@ -89,12 +134,12 @@
 
         private static void TesteEntfernen(Industrieroboter roboter, int index)
         {
-            Werkzeug vorhandenesWerkzeug = roboter.getWerkzeug(index);
-            bool erfolgreich = roboter.werkzeugEntfernen(index);
+            Werkzeug vorhandenesWerkzeug = roboter.GetWerkzeug(index);
+            bool erfolgreich = roboter.WerkzeugEntfernen(index);
 
             if (erfolgreich)
             {
-                Console.WriteLine($"Entferntes Werkzeug auf Platz {index}: {vorhandenesWerkzeug.ausgeben()}");
+                Console.WriteLine($"Entferntes Werkzeug auf Platz {index}: {vorhandenesWerkzeug.Ausgeben()}");
             }
             else
             {

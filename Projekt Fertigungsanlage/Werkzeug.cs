@@ -7,7 +7,7 @@
         private int id;
         private string bezeichner;
         private string art;
-        protected int verschleiss;
+        private int verschleiss;
 
         public int ID
         {
@@ -27,37 +27,45 @@
         public int Verschleiss
         {
             get { return verschleiss; }
+            protected set
+            {
+                if (value >= 100)
+                {
+                    throw new VerschleissException(
+                        $"Verschleissgrenze erreicht oder ueberschritten: {value} %. Werkzeug {bezeichner} ist verbraucht."
+                    );
+                }
+
+                if (value < 0)
+                {
+                    verschleiss = 0;
+                }
+                else
+                {
+                    verschleiss = value;
+                }
+            }
         }
 
-        public Werkzeug(string art, int verschleiss)
+        public Werkzeug(string art, int startVerschleiss)
         {
             id = naechsteId++;
             this.art = art;
             bezeichner = art + "_" + id;
-            this.verschleiss = BegrenzeVerschleiss(verschleiss);
+
+            // Geht bewusst ueber den Setter, damit die Exception-Pruefung
+            // auch bereits beim Setzen im Konstruktor greift.
+            Verschleiss = startVerschleiss;
         }
 
         protected void ErhoeheVerschleiss(int wert)
         {
-            verschleiss = BegrenzeVerschleiss(verschleiss + wert);
+            // Geht ebenfalls bewusst ueber den Setter,
+            // damit bei 100 oder mehr eine Exception ausgeloest wird.
+            Verschleiss = Verschleiss + wert;
         }
 
-        private int BegrenzeVerschleiss(int wert)
-        {
-            if (wert < 0)
-            {
-                return 0;
-            }
-
-            if (wert > 100)
-            {
-                return 100;
-            }
-
-            return wert;
-        }
-
-        public abstract string ausgeben();
-        public abstract void arbeiten();
+        public abstract string Ausgeben();
+        public abstract void Arbeiten();
     }
 }

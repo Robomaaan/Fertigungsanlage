@@ -2,18 +2,19 @@
 {
     public class Schweisser : Werkzeug
     {
-        public Schweisser(string art = "Schweisser", int verschleiss = 0)
+        public Schweisser(string art, int verschleiss)
             : base(art, verschleiss)
         {
         }
 
-        public override string ausgeben()
+        public override string Ausgeben()
         {
-            return $"Schweisser (Verschleiss {verschleiss} %).";
+            return $"Schweisser (Verschleiss {Verschleiss} %).";
         }
 
-        public override void arbeiten()
+        public override void Arbeiten()
         {
+            // Schweisser erhoeht den Verschleiss um 2
             ErhoeheVerschleiss(2);
         }
     }

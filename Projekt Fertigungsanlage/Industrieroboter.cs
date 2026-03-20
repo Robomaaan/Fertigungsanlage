@@ -28,7 +28,7 @@ namespace Fertigungsanlage
             werkzeugKasten = new Werkzeug[maxAnzWerkzeuge];
         }
 
-        public bool werkzeugHinzufuegen(int index, Werkzeug neu)
+        public bool WerkzeugHinzufuegen(int index, Werkzeug neu)
         {
             if (index < 0 || index >= maxAnzWerkzeuge)
             {
@@ -49,7 +49,7 @@ namespace Fertigungsanlage
             return true;
         }
 
-        public bool werkzeugEntfernen(int index)
+        public bool WerkzeugEntfernen(int index)
         {
             if (index < 0 || index >= maxAnzWerkzeuge)
             {
@@ -65,7 +65,7 @@ namespace Fertigungsanlage
             return true;
         }
 
-        public Werkzeug getWerkzeug(int index)
+        public Werkzeug GetWerkzeug(int index)
         {
             if (index < 0 || index >= maxAnzWerkzeuge)
             {
@@ -75,7 +75,7 @@ namespace Fertigungsanlage
             return werkzeugKasten[index];
         }
 
-        public int findeWerkzeug(Werkzeug w)
+        public int FindeWerkzeug(Werkzeug w)
         {
             if (w == null)
             {
@@ -93,7 +93,7 @@ namespace Fertigungsanlage
             return -1;
         }
 
-        public List<int> freiePlaetze()
+        public List<int> FreiePlaetze()
         {
             List<int> freieIndizes = new List<int>();
 
