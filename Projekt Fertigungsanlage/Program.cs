@@ -7,7 +7,9 @@ namespace Fertigungsanlage
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("=== TEST 1: Industrieroboter / Werkzeugkasten ===");
+            IRoboterService roboterService = new RoboterService();
+
+            Console.WriteLine("=== TEST 1: Applikationsschicht / Use Cases ===");
             Console.WriteLine();
 
             Industrieroboter roboter = new Industrieroboter();
@@ -15,17 +17,17 @@ namespace Fertigungsanlage
             Bohrer bohrer1 = new Bohrer("Bohrer", 0, 10);
             Bohrer bohrer2 = new Bohrer("Bohrer", 0, 12);
 
-            TesteHinzufuegen(roboter, 5, bohrer1);
-            TesteHinzufuegen(roboter, 5, bohrer2);
-            TesteHinzufuegen(roboter, 10, bohrer2);
-            TesteHinzufuegen(roboter, -1, bohrer2);
+            Console.WriteLine(roboterService.WerkzeugHinzufuegen(roboter, 5, bohrer1));
+            Console.WriteLine(roboterService.WerkzeugHinzufuegen(roboter, 5, bohrer2));
+            Console.WriteLine(roboterService.WerkzeugHinzufuegen(roboter, 10, bohrer2));
+            Console.WriteLine(roboterService.WerkzeugHinzufuegen(roboter, -1, bohrer2));
 
             Console.WriteLine();
 
-            TesteEntfernen(roboter, 5);
-            TesteEntfernen(roboter, 5);
-            TesteEntfernen(roboter, 10);
-            TesteEntfernen(roboter, -1);
+            Console.WriteLine(roboterService.WerkzeugEntfernen(roboter, 5));
+            Console.WriteLine(roboterService.WerkzeugEntfernen(roboter, 5));
+            Console.WriteLine(roboterService.WerkzeugEntfernen(roboter, 10));
+            Console.WriteLine(roboterService.WerkzeugEntfernen(roboter, -1));
 
             Console.WriteLine();
             Console.WriteLine("=== TEST 2: Weitere Werkzeugtypen ===");
@@ -34,9 +36,10 @@ namespace Fertigungsanlage
             Greifer greifer = new Greifer("Greifer", 0, 25);
             Schweisser schweisser = new Schweisser("Schweisser", 0);
 
-            roboter.WerkzeugHinzufuegen(2, greifer);
-            roboter.WerkzeugHinzufuegen(7, schweisser);
+            Console.WriteLine(roboterService.WerkzeugHinzufuegen(roboter, 2, greifer));
+            Console.WriteLine(roboterService.WerkzeugHinzufuegen(roboter, 7, schweisser));
 
+            Console.WriteLine();
             Console.WriteLine("Werkzeug auf Platz 2: " + roboter.GetWerkzeug(2)?.Ausgeben());
             Console.WriteLine("Werkzeug auf Platz 7: " + roboter.GetWerkzeug(7)?.Ausgeben());
             Console.WriteLine("Werkzeug auf Platz 4: " + (roboter.GetWerkzeug(4) == null ? "null" : roboter.GetWerkzeug(4).Ausgeben()));
@@ -77,7 +80,7 @@ namespace Fertigungsanlage
             try
             {
                 Console.WriteLine("Bohrer arbeitet jetzt...");
-                bohrerFastKaputt.Arbeiten();   // 95 + 5 = 100 -> Exception
+                bohrerFastKaputt.Arbeiten();
                 Console.WriteLine("Nach dem Arbeiten:");
                 Console.WriteLine(bohrerFastKaputt.Ausgeben());
             }
@@ -109,49 +112,6 @@ namespace Fertigungsanlage
             Console.WriteLine();
             Console.WriteLine("Programm beendet.");
             Console.ReadKey();
-        }
-
-        private static void TesteHinzufuegen(Industrieroboter roboter, int index, Werkzeug werkzeug)
-        {
-            bool erfolgreich = roboter.WerkzeugHinzufuegen(index, werkzeug);
-
-            if (erfolgreich)
-            {
-                Console.WriteLine($"Hinzugefuegtes Werkzeug auf Platz {index}: {roboter.GetWerkzeug(index).Ausgeben()}");
-            }
-            else
-            {
-                if (index < 0 || index >= 10)
-                {
-                    Console.WriteLine($"Hinzufuegen nicht moeglich, da Platz {index} nicht existiert.");
-                }
-                else
-                {
-                    Console.WriteLine($"Hinzufuegen nicht moeglich, da Platz {index} belegt ist.");
-                }
-            }
-        }
-
-        private static void TesteEntfernen(Industrieroboter roboter, int index)
-        {
-            Werkzeug vorhandenesWerkzeug = roboter.GetWerkzeug(index);
-            bool erfolgreich = roboter.WerkzeugEntfernen(index);
-
-            if (erfolgreich)
-            {
-                Console.WriteLine($"Entferntes Werkzeug auf Platz {index}: {vorhandenesWerkzeug.Ausgeben()}");
-            }
-            else
-            {
-                if (index < 0 || index >= 10)
-                {
-                    Console.WriteLine($"Entfernen nicht moeglich, da Platz {index} nicht existiert.");
-                }
-                else
-                {
-                    Console.WriteLine($"Entfernen nicht moeglich, da Platz {index} nicht belegt ist.");
-                }
-            }
         }
     }
 }
